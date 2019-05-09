@@ -233,7 +233,7 @@ pub fn subprocess_communicate(mut process : Child, input : &[u8]) -> (Vec<u8>, V
 #[test]
 fn test_subprocess_pipe() {
     let process =
-           Command::new("/bin/cat")
+           Command::new("cat")
            .stdin(Stdio::piped())
            .stdout(Stdio::piped())
            .stderr(Stdio::piped())

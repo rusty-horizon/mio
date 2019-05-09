@@ -13,8 +13,8 @@ use iovec::unix as iovec;
 use {io, Ready, Poll, PollOpt, Token};
 use event::Evented;
 
-use sys::unix::eventedfd::EventedFd;
-use sys::unix::io::set_nonblock;
+use super::eventedfd::EventedFd;
+use super::io::set_nonblock;
 
 pub struct TcpStream {
     inner: net::TcpStream,

@@ -8,8 +8,8 @@ use libc;
 
 use {io, Ready, Poll, PollOpt, Token};
 use event::Evented;
-use sys::unix::{cvt, Io};
-use sys::unix::io::{set_nonblock, set_cloexec};
+use super::{cvt, Io};
+use super::io::{set_nonblock, set_cloexec};
 
 trait MyInto<T> {
     fn my_into(self) -> T;

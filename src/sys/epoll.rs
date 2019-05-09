@@ -11,8 +11,8 @@ use libc::{EPOLLET, EPOLLOUT, EPOLLIN, EPOLLPRI};
 
 use {io, Ready, PollOpt, Token};
 use event_imp::Event;
-use sys::unix::{cvt, UnixReady};
-use sys::unix::io::set_cloexec;
+use super::{cvt, UnixReady};
+use super::io::set_cloexec;
 
 /// Each Selector has a globally unique(ish) ID associated with it. This ID
 /// gets tracked by `TcpStream`, `TcpListener`, etc... when they are first
@@ -30,21 +30,9 @@ pub struct Selector {
 impl Selector {
     pub fn new() -> io::Result<Selector> {
         let epfd = unsafe {
-            // Emulate `epoll_create` by using `epoll_create1` if it's available
-            // and otherwise falling back to `epoll_create` followed by a call to
-            // set the CLOEXEC flag.
-            dlsym!(fn epoll_create1(c_int) -> c_int);
-
-            match epoll_create1.get() {
-                Some(epoll_create1_fn) => {
-                    cvt(epoll_create1_fn(libc::EPOLL_CLOEXEC))?
-                }
-                None => {
-                    let fd = cvt(libc::epoll_create(1024))?;
-                    drop(set_cloexec(fd));
-                    fd
-                }
-            }
+            let fd = cvt(libc::epoll_create(1024))?;
+            drop(set_cloexec(fd));
+            fd
         };
 
         // offset by 1 to avoid choosing 0 as the id of a selector

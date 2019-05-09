@@ -11,8 +11,8 @@ use libc::{self, time_t};
 
 use {io, Ready, PollOpt, Token};
 use event_imp::{self as event, Event};
-use sys::unix::{cvt, UnixReady};
-use sys::unix::io::set_cloexec;
+use super::{cvt, UnixReady};
+use super::io::set_cloexec;
 
 /// Each Selector has a globally unique(ish) ID associated with it. This ID
 /// gets tracked by `TcpStream`, `TcpListener`, etc... when they are first
@@ -342,7 +342,7 @@ impl fmt::Debug for Events {
 #[test]
 fn does_not_register_rw() {
     use {Poll, Ready, PollOpt, Token};
-    use unix::EventedFd;
+    use super::EventedFd;
 
     let kq = unsafe { libc::kqueue() };
     let kqf = EventedFd(&kq);

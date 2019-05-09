@@ -1,56 +1,72 @@
-#[cfg(all(unix, not(target_os = "fuchsia")))]
-pub use self::unix::{
-    Awakener,
-    EventedFd,
-    Events,
-    Io,
-    Selector,
-    TcpStream,
-    TcpListener,
-    UdpSocket,
-    pipe,
-    set_nonblock,
-};
+#[cfg(any(target_os = "linux", target_os = "android", target_os = "solaris"))]
+mod epoll;
 
-#[cfg(all(unix, not(target_os = "fuchsia")))]
-pub use self::unix::READY_ALL;
+#[cfg(any(target_os = "linux", target_os = "android", target_os = "solaris"))]
+pub use self::epoll::{Events, Selector};
 
-#[cfg(all(unix, not(target_os = "fuchsia")))]
+#[cfg(any(target_os = "bitrig", target_os = "dragonfly",
+          target_os = "freebsd", target_os = "ios", target_os = "macos",
+          target_os = "netbsd", target_os = "openbsd"))]
+mod kqueue;
+
+#[cfg(any(target_os = "bitrig", target_os = "dragonfly",
+          target_os = "freebsd", target_os = "ios", target_os = "macos",
+          target_os = "netbsd", target_os = "openbsd"))]
+pub use self::kqueue::{Events, Selector};
+
+mod awakener;
+mod eventedfd;
+mod io;
+mod ready;
+mod tcp;
+mod udp;
+
 #[cfg(feature = "with-deprecated")]
-pub use self::unix::UnixSocket;
+mod uds;
 
-#[cfg(all(unix, not(target_os = "fuchsia")))]
-pub mod unix;
+pub use self::awakener::Awakener;
+pub use self::eventedfd::EventedFd;
+pub use self::io::{Io, set_nonblock};
+pub use self::ready::{UnixReady, READY_ALL};
+pub use self::tcp::{TcpStream, TcpListener};
+pub use self::udp::UdpSocket;
 
-#[cfg(windows)]
-pub use self::windows::{
-    Awakener,
-    Events,
-    Selector,
-    TcpStream,
-    TcpListener,
-    UdpSocket,
-    Overlapped,
-    Binding,
-};
+#[cfg(feature = "with-deprecated")]
+pub use self::uds::UnixSocket;
 
-#[cfg(windows)]
-mod windows;
+pub use iovec::IoVec;
 
-#[cfg(target_os = "fuchsia")]
-pub use self::fuchsia::{
-    Awakener,
-    Events,
-    EventedHandle,
-    Selector,
-    TcpStream,
-    TcpListener,
-    UdpSocket,
-    set_nonblock,
-};
+use std::os::unix::io::FromRawFd;
 
-#[cfg(target_os = "fuchsia")]
-pub mod fuchsia;
+pub fn pipe() -> ::io::Result<(Io, Io)> {
+    let mut pipes = [0; 2];
+    let flags = libc::O_NONBLOCK | libc::O_CLOEXEC;
+    unsafe {
+        cvt(libc::pipe2(pipes.as_mut_ptr(), flags))?;
+    }
 
-#[cfg(not(all(unix, not(target_os = "fuchsia"))))]
-pub const READY_ALL: usize = 0;
+    unsafe {
+        Ok((Io::from_raw_fd(pipes[0]), Io::from_raw_fd(pipes[1])))
+    }
+}
+
+trait IsMinusOne {
+    fn is_minus_one(&self) -> bool;
+}
+
+impl IsMinusOne for i32 {
+    fn is_minus_one(&self) -> bool { *self == -1 }
+}
+impl IsMinusOne for isize {
+    fn is_minus_one(&self) -> bool { *self == -1 }
+}
+
+fn cvt<T: IsMinusOne>(t: T) -> ::io::Result<T> {
+    use std::io;
+
+    if t.is_minus_one() {
+        Err(io::Error::last_os_error())
+    } else {
+        Ok(t)
+    }
+}

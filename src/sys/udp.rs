@@ -1,6 +1,6 @@
 use {io, Ready, Poll, PollOpt, Token};
 use event::Evented;
-use unix::EventedFd;
+use super::EventedFd;
 use std::fmt;
 use std::net::{self, Ipv4Addr, Ipv6Addr, SocketAddr};
 use std::os::unix::io::{RawFd, IntoRawFd, AsRawFd, FromRawFd};
