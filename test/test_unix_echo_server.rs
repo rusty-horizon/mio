@@ -1,4 +1,4 @@
-use {TryRead, TryWrite};
+use crate::{TryRead, TryWrite};
 use mio::*;
 use mio::deprecated::{EventLoop, Handler};
 use mio::deprecated::unix::*;

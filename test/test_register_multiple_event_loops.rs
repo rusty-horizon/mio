@@ -1,4 +1,4 @@
-use localhost;
+use crate::localhost;
 use mio::*;
 use mio::net::{TcpListener, TcpStream, UdpSocket};
 use std::io::ErrorKind;

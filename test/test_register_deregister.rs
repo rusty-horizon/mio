@@ -1,4 +1,4 @@
-use {expect_events, localhost, TryWrite};
+use crate::{expect_events, localhost, TryWrite};
 use mio::{Events, Poll, PollOpt, Ready, Token};
 use mio::event::Event;
 use mio::net::{TcpListener, TcpStream};

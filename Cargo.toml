@@ -21,6 +21,7 @@ exclude       = [
   ".travis.yml",
   "deploy.sh",
 ]
+edition       = "2018"
 
 [features]
 with-deprecated = []

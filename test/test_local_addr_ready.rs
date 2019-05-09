@@ -1,4 +1,4 @@
-use {TryWrite};
+use crate::{TryWrite};
 use mio::{Events, Poll, PollOpt, Ready, Token};
 use mio::net::{TcpListener, TcpStream};
 

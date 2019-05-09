@@ -1,7 +1,7 @@
 use mio::*;
 use mio::deprecated::{EventLoop, Handler};
 use mio::net::{TcpListener, TcpStream};
-use {sleep_ms};
+use crate::{sleep_ms};
 
 struct TestHandler {
     tick: usize,

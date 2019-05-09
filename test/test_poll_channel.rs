@@ -1,4 +1,4 @@
-use {expect_events, sleep_ms};
+use crate::{expect_events, sleep_ms};
 use mio::{channel, Events, Poll, PollOpt, Ready, Token};
 use mio::event::Event;
 use std::sync::mpsc::TryRecvError;

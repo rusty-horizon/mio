@@ -1,4 +1,4 @@
-extern crate mio;
+use mio;
 
 use mio::{Events, Poll, Token, Ready, PollOpt};
 use mio::net::TcpListener;

@@ -8,7 +8,7 @@ use std::time::Duration;
 
 use net2::{self, TcpStreamExt};
 
-use {TryRead, TryWrite};
+use crate::{TryRead, TryWrite};
 use mio::{Token, Ready, PollOpt, Poll, Events};
 use iovec::IoVec;
 use mio::net::{TcpListener, TcpStream};

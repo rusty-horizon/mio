@@ -1,8 +1,8 @@
-use {channel, Poll, Events, Token};
-use event::Evented;
-use deprecated::{Handler, NotifyError};
-use event_imp::{Event, Ready, PollOpt};
-use timer::{self, Timer, Timeout};
+use crate::{channel, Poll, Events, Token};
+use crate::event::Evented;
+use crate::deprecated::{Handler, NotifyError};
+use crate::event_imp::{Event, Ready, PollOpt};
+use crate::timer::{self, Timer, Timeout};
 use std::{io, fmt, usize};
 use std::default::Default;
 use std::time::Duration;
@@ -359,7 +359,7 @@ impl<H: Handler> EventLoop<H> {
 }
 
 impl<H: Handler> fmt::Debug for EventLoop<H> {
-    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+    fn fmt(&self, fmt: &mut fmt::Formatter<'_>) -> fmt::Result {
         fmt.debug_struct("EventLoop")
             .field("run", &self.run)
             .field("poll", &self.poll)
@@ -374,7 +374,7 @@ pub struct Sender<M> {
 }
 
 impl<M> fmt::Debug for Sender<M> {
-    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+    fn fmt(&self, fmt: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(fmt, "Sender<?> {{ ... }}")
     }
 }

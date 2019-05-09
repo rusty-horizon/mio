@@ -1,13 +1,13 @@
-use {io, sys, Ready, Poll, PollOpt, Token};
-use event::Evented;
-use deprecated::TryAccept;
-use io::MapNonBlock;
+use crate::{io, sys, Ready, Poll, PollOpt, Token};
+use crate::event::Evented;
+use crate::deprecated::TryAccept;
+use crate::io::MapNonBlock;
 use std::io::{Read, Write};
 use std::path::Path;
 pub use std::net::Shutdown;
 use std::process;
 
-pub use sys::Io;
+pub use crate::sys::Io;
 
 #[derive(Debug)]
 pub struct UnixSocket {

@@ -1,4 +1,4 @@
-use {expect_events, sleep_ms, TryRead};
+use crate::{expect_events, sleep_ms, TryRead};
 use mio::{Events, Poll, PollOpt, Ready, Token};
 use mio::event::Event;
 use mio::net::{TcpListener, TcpStream};

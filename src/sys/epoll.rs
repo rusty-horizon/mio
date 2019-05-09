@@ -9,8 +9,8 @@ use libc::{self, c_int};
 use libc::{EPOLLERR, EPOLLHUP, EPOLLRDHUP, EPOLLONESHOT};
 use libc::{EPOLLET, EPOLLOUT, EPOLLIN, EPOLLPRI};
 
-use {io, Ready, PollOpt, Token};
-use event_imp::Event;
+use crate::{io, Ready, PollOpt, Token};
+use crate::event_imp::Event;
 use super::{cvt, UnixReady};
 use super::io::set_cloexec;
 

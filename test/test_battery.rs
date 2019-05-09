@@ -1,4 +1,4 @@
-use {localhost, sleep_ms, TryRead, TryWrite};
+use crate::{localhost, sleep_ms, TryRead, TryWrite};
 use mio::*;
 use mio::deprecated::{EventLoop, EventLoopBuilder, Handler};
 use mio::net::{TcpListener, TcpStream};

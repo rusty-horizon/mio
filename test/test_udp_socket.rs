@@ -4,7 +4,7 @@ use bytes::{Buf, RingBuf, SliceBuf, MutBuf};
 use std::io::ErrorKind;
 use std::str;
 use std::time;
-use localhost;
+use crate::localhost;
 
 const LISTENER: Token = Token(0);
 const SENDER: Token = Token(1);

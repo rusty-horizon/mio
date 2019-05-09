@@ -1,4 +1,4 @@
-use {localhost, TryRead, TryWrite};
+use crate::{localhost, TryRead, TryWrite};
 use mio::{Events, Poll, PollOpt, Ready, Token};
 use mio::net::{TcpListener, TcpStream};
 use bytes::{Buf, ByteBuf, MutByteBuf, SliceBuf};
@@ -213,7 +213,7 @@ impl EchoClient {
         }
 
         if self.interest.is_readable() || self.interest.is_writable() {
-            try!(poll.reregister(&self.sock, self.token, self.interest,
+            r#try!(poll.reregister(&self.sock, self.token, self.interest,
                                   PollOpt::edge() | PollOpt::oneshot()));
         }
 

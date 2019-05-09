@@ -2,8 +2,8 @@
 
 #![allow(deprecated, missing_debug_implementations)]
 
-use {convert, io, Ready, Poll, PollOpt, Registration, SetReadiness, Token};
-use event::Evented;
+use crate::{convert, io, Ready, Poll, PollOpt, Registration, SetReadiness, Token};
+use crate::event::Evented;
 use lazycell::LazyCell;
 use slab::Slab;
 use std::{cmp, error, fmt, u64, usize, iter, thread};
@@ -416,7 +416,7 @@ impl<T> Evented for Timer<T> {
 }
 
 impl fmt::Debug for Inner {
-    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+    fn fmt(&self, fmt: &mut fmt::Formatter<'_>) -> fmt::Result {
         fmt.debug_struct("Inner")
             .field("registration", &self.registration)
             .field("wakeup_state", &self.wakeup_state.load(Ordering::Relaxed))
@@ -494,7 +494,7 @@ impl<T> Entry<T> {
 }
 
 impl fmt::Display for TimerError {
-    fn fmt(&self, _: &mut fmt::Formatter) -> fmt::Result {
+    fn fmt(&self, _: &mut fmt::Formatter<'_>) -> fmt::Result {
         // `TimerError` will never be constructed.
         unreachable!();
     }
@@ -508,7 +508,7 @@ impl error::Error for TimerError {
 }
 
 impl fmt::Display for TimerErrorKind {
-    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+    fn fmt(&self, fmt: &mut fmt::Formatter<'_>) -> fmt::Result {
         match *self {
             TimerOverflow => write!(fmt, "TimerOverflow"),
         }

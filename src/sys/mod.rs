@@ -38,7 +38,7 @@ pub use iovec::IoVec;
 
 use std::os::unix::io::FromRawFd;
 
-pub fn pipe() -> ::io::Result<(Io, Io)> {
+pub fn pipe() -> crate::io::Result<(Io, Io)> {
     let mut pipes = [0; 2];
     let flags = libc::O_NONBLOCK | libc::O_CLOEXEC;
     unsafe {
@@ -61,7 +61,7 @@ impl IsMinusOne for isize {
     fn is_minus_one(&self) -> bool { *self == -1 }
 }
 
-fn cvt<T: IsMinusOne>(t: T) -> ::io::Result<T> {
+fn cvt<T: IsMinusOne>(t: T) -> crate::io::Result<T> {
     use std::io;
 
     if t.is_minus_one() {

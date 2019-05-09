@@ -1,5 +1,5 @@
-use {io, Ready, Poll, PollOpt, Token};
-use event::Evented;
+use crate::{io, Ready, Poll, PollOpt, Token};
+use crate::event::Evented;
 use super::EventedFd;
 use std::fmt;
 use std::net::{self, Ipv4Addr, Ipv6Addr, SocketAddr};
@@ -145,7 +145,7 @@ impl Evented for UdpSocket {
 }
 
 impl fmt::Debug for UdpSocket {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         fmt::Debug::fmt(&self.io, f)
     }
 }

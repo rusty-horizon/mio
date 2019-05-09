@@ -1,5 +1,5 @@
-use {sys, Token};
-use event_imp::{self as event, Ready, Event, Evented, PollOpt};
+use crate::{sys, Token};
+use crate::event_imp::{self as event, Ready, Event, Evented, PollOpt};
 use std::{fmt, io, ptr, usize};
 use std::cell::UnsafeCell;
 use std::{mem, ops, isize};
@@ -1210,7 +1210,7 @@ fn validate_args(token: Token) -> io::Result<()> {
 }
 
 impl fmt::Debug for Poll {
-    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+    fn fmt(&self, fmt: &mut fmt::Formatter<'_>) -> fmt::Result {
         fmt.debug_struct("Poll")
             .finish()
     }
@@ -1424,7 +1424,7 @@ impl Events {
     /// #     try_main().unwrap();
     /// # }
     /// ```
-    pub fn iter(&self) -> Iter {
+    pub fn iter(&self) -> Iter<'_> {
         Iter {
             inner: self,
             pos: 0
@@ -1507,7 +1507,7 @@ impl Iterator for IntoIter {
 }
 
 impl fmt::Debug for Events {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("Events")
             .field("capacity", &self.capacity())
             .finish()
@@ -1688,7 +1688,7 @@ impl Drop for Registration {
 }
 
 impl fmt::Debug for Registration {
-    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+    fn fmt(&self, fmt: &mut fmt::Formatter<'_>) -> fmt::Result {
         fmt.debug_struct("Registration")
             .finish()
     }
@@ -1812,7 +1812,7 @@ impl SetReadiness {
 }
 
 impl fmt::Debug for SetReadiness {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("SetReadiness")
             .finish()
     }

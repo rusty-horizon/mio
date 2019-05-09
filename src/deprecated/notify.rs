@@ -1,4 +1,4 @@
-use {channel};
+use crate::{channel};
 use std::{fmt, io, error, any};
 
 pub enum NotifyError<T> {
@@ -8,7 +8,7 @@ pub enum NotifyError<T> {
 }
 
 impl<M> fmt::Debug for NotifyError<M> {
-    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+    fn fmt(&self, fmt: &mut fmt::Formatter<'_>) -> fmt::Result {
         match *self {
             NotifyError::Io(ref e) => {
                 write!(fmt, "NotifyError::Io({:?})", e)
@@ -24,7 +24,7 @@ impl<M> fmt::Debug for NotifyError<M> {
 }
 
 impl<M> fmt::Display for NotifyError<M> {
-    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+    fn fmt(&self, fmt: &mut fmt::Formatter<'_>) -> fmt::Result {
         match *self {
             NotifyError::Io(ref e) => {
                 write!(fmt, "IO error: {}", e)
@@ -44,7 +44,7 @@ impl<M: any::Any> error::Error for NotifyError<M> {
         }
     }
 
-    fn cause(&self) -> Option<&error::Error> {
+    fn cause(&self) -> Option<&dyn error::Error> {
         match *self {
             NotifyError::Io(ref err) => Some(err),
             _ => None

@@ -9,10 +9,10 @@
 
 #![allow(deprecated)]
 
-use {sys, Ready, Poll, PollOpt, Token};
-use io::{self, MapNonBlock};
-use event::Evented;
-use poll::SelectorId;
+use crate::{sys, Ready, Poll, PollOpt, Token};
+use crate::io::{self, MapNonBlock};
+use crate::event::Evented;
+use crate::poll::SelectorId;
 use std::net::{self, Ipv4Addr, Ipv6Addr, SocketAddr};
 
 /// A User Datagram Protocol socket.

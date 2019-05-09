@@ -6,8 +6,8 @@ use std::path::Path;
 
 use libc;
 
-use {io, Ready, Poll, PollOpt, Token};
-use event::Evented;
+use crate::{io, Ready, Poll, PollOpt, Token};
+use crate::event::Evented;
 use super::{cvt, Io};
 use super::io::{set_nonblock, set_cloexec};
 

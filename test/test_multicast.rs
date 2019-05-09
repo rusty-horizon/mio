@@ -7,7 +7,7 @@ use mio::net::UdpSocket;
 use bytes::{Buf, MutBuf, RingBuf, SliceBuf};
 use std::str;
 use std::net::IpAddr;
-use localhost;
+use crate::localhost;
 
 const LISTENER: Token = Token(0);
 const SENDER: Token = Token(1);

@@ -1,5 +1,5 @@
-use {Ready, Token};
-use deprecated::{EventLoop};
+use crate::{Ready, Token};
+use crate::deprecated::{EventLoop};
 
 #[allow(unused_variables)]
 pub trait Handler: Sized {

@@ -1,20 +1,11 @@
 #![allow(deprecated)]
 
-extern crate mio;
-extern crate bytes;
-extern crate net2;
-
-#[macro_use]
-extern crate log;
-extern crate env_logger;
-extern crate iovec;
-extern crate slab;
-extern crate tempdir;
+use log::*;
 
 #[cfg(target_os = "fuchsia")]
 extern crate fuchsia_zircon as zircon;
 
-pub use ports::localhost;
+pub use crate::ports::localhost;
 
 mod test_custom_evented;
 mod test_close_on_drop;

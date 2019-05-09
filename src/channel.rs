@@ -2,8 +2,8 @@
 
 #![allow(unused_imports, deprecated, missing_debug_implementations)]
 
-use {io, Ready, Poll, PollOpt, Registration, SetReadiness, Token};
-use event::Evented;
+use crate::{io, Ready, Poll, PollOpt, Registration, SetReadiness, Token};
+use crate::event::Evented;
 use lazycell::{LazyCell, AtomicLazyCell};
 use std::any::Any;
 use std::fmt;
@@ -349,31 +349,31 @@ impl<T: Any> error::Error for TrySendError<T> {
 }
 
 impl<T> fmt::Debug for SendError<T> {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         format_send_error(self, f)
     }
 }
 
 impl<T> fmt::Display for SendError<T> {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         format_send_error(self, f)
     }
 }
 
 impl<T> fmt::Debug for TrySendError<T> {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         format_try_send_error(self, f)
     }
 }
 
 impl<T> fmt::Display for TrySendError<T> {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         format_try_send_error(self, f)
     }
 }
 
 #[inline]
-fn format_send_error<T>(e: &SendError<T>, f: &mut fmt::Formatter) -> fmt::Result {
+fn format_send_error<T>(e: &SendError<T>, f: &mut fmt::Formatter<'_>) -> fmt::Result {
     match e {
         &SendError::Io(ref io_err) => write!(f, "{}", io_err),
         &SendError::Disconnected(..) => write!(f, "Disconnected"),
@@ -381,7 +381,7 @@ fn format_send_error<T>(e: &SendError<T>, f: &mut fmt::Formatter) -> fmt::Result
 }
 
 #[inline]
-fn format_try_send_error<T>(e: &TrySendError<T>, f: &mut fmt::Formatter) -> fmt::Result {
+fn format_try_send_error<T>(e: &TrySendError<T>, f: &mut fmt::Formatter<'_>) -> fmt::Result {
     match e {
         &TrySendError::Io(ref io_err) => write!(f, "{}", io_err),
         &TrySendError::Full(..) => write!(f, "Full"),

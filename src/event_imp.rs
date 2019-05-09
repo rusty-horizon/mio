@@ -1,4 +1,4 @@
-use {Poll, Token};
+use crate::{Poll, Token};
 use std::{fmt, io, ops};
 
 /// A value that may be registered with `Poll`
@@ -154,7 +154,7 @@ pub trait Evented {
     fn deregister(&self, poll: &Poll) -> io::Result<()>;
 }
 
-impl Evented for Box<Evented> {
+impl Evented for Box<dyn Evented> {
     fn register(&self, poll: &Poll, token: Token, interest: Ready, opts: PollOpt) -> io::Result<()> {
         self.as_ref().register(poll, token, interest, opts)
     }
@@ -525,7 +525,7 @@ impl ops::Not for PollOpt {
 }
 
 impl fmt::Debug for PollOpt {
-    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+    fn fmt(&self, fmt: &mut fmt::Formatter<'_>) -> fmt::Result {
         let mut one = false;
         let flags = [
             (PollOpt::edge(), "Edge-Triggered"),
@@ -703,7 +703,7 @@ impl Ready {
     /// [`Poll`]: struct.Poll.html
     #[inline]
     pub fn all() -> Ready {
-        Ready(READABLE | WRITABLE | ::sys::READY_ALL)
+        Ready(READABLE | WRITABLE | crate::sys::READY_ALL)
     }
 
     /// Returns true if `Ready` is the empty set
@@ -1012,7 +1012,7 @@ impl ops::Not for Ready {
 }
 
 impl fmt::Debug for Ready {
-    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+    fn fmt(&self, fmt: &mut fmt::Formatter<'_>) -> fmt::Result {
         let mut one = false;
         let flags = [
             (Ready::readable(), "Readable"),

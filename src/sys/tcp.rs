@@ -5,13 +5,11 @@ use std::net::{self, SocketAddr};
 use std::os::unix::io::{RawFd, FromRawFd, IntoRawFd, AsRawFd};
 use std::time::Duration;
 
-use libc;
 use net2::TcpStreamExt;
-use iovec::IoVec;
-use iovec::unix as iovec;
+use iovec::{IoVec, unix};
 
-use {io, Ready, Poll, PollOpt, Token};
-use event::Evented;
+use crate::{io, Ready, Poll, PollOpt, Token};
+use crate::event::Evented;
 
 use super::eventedfd::EventedFd;
 use super::io::set_nonblock;
@@ -131,7 +129,7 @@ impl TcpStream {
 
     pub fn readv(&self, bufs: &mut [&mut IoVec]) -> io::Result<usize> {
         unsafe {
-            let slice = iovec::as_os_slice_mut(bufs);
+            let slice = unix::as_os_slice_mut(bufs);
             let len = cmp::min(<libc::c_int>::max_value() as usize, slice.len());
             let rc = libc::readv(self.inner.as_raw_fd(),
                                  slice.as_ptr(),
@@ -146,7 +144,7 @@ impl TcpStream {
 
     pub fn writev(&self, bufs: &[&IoVec]) -> io::Result<usize> {
         unsafe {
-            let slice = iovec::as_os_slice(bufs);
+            let slice = unix::as_os_slice(bufs);
             let len = cmp::min(<libc::c_int>::max_value() as usize, slice.len());
             let rc = libc::writev(self.inner.as_raw_fd(),
                                   slice.as_ptr(),
@@ -193,7 +191,7 @@ impl Evented for TcpStream {
 }
 
 impl fmt::Debug for TcpStream {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         fmt::Debug::fmt(&self.inner, f)
     }
 }
@@ -282,7 +280,7 @@ impl Evented for TcpListener {
 }
 
 impl fmt::Debug for TcpListener {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         fmt::Debug::fmt(&self.inner, f)
     }
 }

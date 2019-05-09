@@ -1,7 +1,7 @@
 use mio::{Events, Poll, PollOpt, Ready, Token};
 use mio::event::Event;
 use mio::net::UdpSocket;
-use {expect_events, sleep_ms};
+use crate::{expect_events, sleep_ms};
 
 #[test]
 pub fn test_udp_level_triggered() {
