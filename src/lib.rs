@@ -115,7 +115,6 @@ extern crate iovec;
 extern crate net2;
 extern crate slab;
 
-#[cfg(unix)]
 extern crate libc;
 
 #[macro_use]
@@ -143,7 +142,6 @@ pub mod event {
 
 pub use event::Events;
 
-#[cfg(unix)]
 pub mod unix {
     //! Unix only extensions
     pub use sys::UnixReady;

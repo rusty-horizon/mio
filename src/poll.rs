@@ -1,8 +1,6 @@
 use event_imp::{self as event, Event, Evented, Interests, PollOpt, Ready};
 use std::cell::UnsafeCell;
-#[cfg(unix)]
 use std::os::unix::io::AsRawFd;
-#[cfg(unix)]
 use std::os::unix::io::RawFd;
 use std::process;
 use std::sync::atomic::Ordering::{self, AcqRel, Acquire, Relaxed, Release};
@@ -873,7 +871,6 @@ impl fmt::Debug for Registry {
     }
 }
 
-#[cfg(unix)]
 impl AsRawFd for Poll {
     fn as_raw_fd(&self) -> RawFd {
         self.registry.inner.selector.as_raw_fd()
@@ -2733,7 +2730,6 @@ impl Clone for SelectorId {
 }
 
 #[test]
-#[cfg(unix)]
 pub fn as_raw_fd() {
     let poll = Poll::new().unwrap();
     assert!(poll.as_raw_fd() > 0);

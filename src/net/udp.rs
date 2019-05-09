@@ -12,7 +12,6 @@ use std::net::{self, Ipv4Addr, Ipv6Addr, SocketAddr};
 /// [portability guidelines]: ../struct.Poll.html#portability
 use {io, sys, Interests, PollOpt, Registry, Token};
 
-#[cfg(unix)]
 use iovec::IoVec;
 
 /// A User Datagram Protocol socket.
@@ -551,7 +550,6 @@ impl UdpSocket {
     /// On Unix this corresponds to the `readv` syscall.
     ///
     /// [link]: https://doc.rust-lang.org/nightly/std/io/enum.ErrorKind.html#variant.WouldBlock
-    #[cfg(unix)]
     pub fn recv_bufs(&self, bufs: &mut [&mut IoVec]) -> io::Result<usize> {
         self.sys.readv(bufs)
     }
@@ -572,7 +570,6 @@ impl UdpSocket {
     /// On Unix this corresponds to the `writev` syscall.
     ///
     /// [link]: https://doc.rust-lang.org/nightly/std/io/enum.ErrorKind.html#variant.WouldBlock
-    #[cfg(unix)]
     pub fn send_bufs(&self, bufs: &[&IoVec]) -> io::Result<usize> {
         self.sys.writev(bufs)
     }
@@ -617,24 +614,20 @@ impl fmt::Debug for UdpSocket {
  *
  */
 
-#[cfg(unix)]
 use std::os::unix::io::{AsRawFd, FromRawFd, IntoRawFd, RawFd};
 
-#[cfg(unix)]
 impl IntoRawFd for UdpSocket {
     fn into_raw_fd(self) -> RawFd {
         self.sys.into_raw_fd()
     }
 }
 
-#[cfg(unix)]
 impl AsRawFd for UdpSocket {
     fn as_raw_fd(&self) -> RawFd {
         self.sys.as_raw_fd()
     }
 }
 
-#[cfg(unix)]
 impl FromRawFd for UdpSocket {
     unsafe fn from_raw_fd(fd: RawFd) -> UdpSocket {
         UdpSocket {
