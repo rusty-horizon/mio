@@ -8,7 +8,7 @@
 /// [portability guidelines]: ../struct.Poll.html#portability
 use std::fmt;
 use std::io::{Read, Write};
-use std::net::{self, Ipv4Addr, Ipv6Addr, SocketAddr, SocketAddrV4, SocketAddrV6};
+use std::net::{self, SocketAddr};
 use std::time::Duration;
 
 use iovec::IoVec;
@@ -331,21 +331,6 @@ impl TcpStream {
     /// On Unix this corresponds to the `writev` syscall.
     pub fn write_bufs(&self, bufs: &[&IoVec]) -> io::Result<usize> {
         self.sys.writev(bufs)
-    }
-}
-
-fn inaddr_any(other: &SocketAddr) -> SocketAddr {
-    match *other {
-        SocketAddr::V4(..) => {
-            let any = Ipv4Addr::new(0, 0, 0, 0);
-            let addr = SocketAddrV4::new(any, 0);
-            SocketAddr::V4(addr)
-        }
-        SocketAddr::V6(..) => {
-            let any = Ipv6Addr::new(0, 0, 0, 0, 0, 0, 0, 0);
-            let addr = SocketAddrV6::new(any, 0, 0, 0);
-            SocketAddr::V6(addr)
-        }
     }
 }
 
