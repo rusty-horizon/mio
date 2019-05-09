@@ -11,9 +11,9 @@ use net2::TcpStreamExt;
 use event::Evented;
 use {io, Interests, PollOpt, Registry, Token};
 
-use sys::unix::eventedfd::EventedFd;
-use sys::unix::io::set_nonblock;
-use sys::unix::uio::VecIo;
+use sys::eventedfd::EventedFd;
+use sys::io::set_nonblock;
+use sys::uio::VecIo;
 
 pub struct TcpStream {
     inner: net::TcpStream,

@@ -9,8 +9,8 @@ use libc::{EPOLLERR, EPOLLHUP, EPOLLONESHOT, EPOLLRDHUP};
 use libc::{EPOLLET, EPOLLIN, EPOLLOUT, EPOLLPRI};
 
 use event_imp::Event;
-use sys::unix::io::set_cloexec;
-use sys::unix::{cvt, UnixReady};
+use sys::io::set_cloexec;
+use sys::{cvt, UnixReady};
 use {io, Interests, PollOpt, Ready, Token};
 
 /// Each Selector has a globally unique(ish) ID associated with it. This ID

@@ -3,7 +3,7 @@ use std;
 use std::fmt;
 use std::net::{Ipv4Addr, Ipv6Addr, SocketAddr};
 use std::os::unix::io::{AsRawFd, FromRawFd, IntoRawFd, RawFd};
-use sys::unix::uio::VecIo;
+use sys::uio::VecIo;
 use unix::EventedFd;
 use {io, Interests, PollOpt, Registry, Token};
 

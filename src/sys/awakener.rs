@@ -4,7 +4,7 @@ pub use self::pipe::Awakener;
 mod pipe {
     use event::Evented;
     use std::io::{Read, Write};
-    use sys::unix;
+    use sys;
     use {io, Interests, PollOpt, Registry, Token};
 
     /*
@@ -14,13 +14,13 @@ mod pipe {
      */
 
     pub struct Awakener {
-        reader: unix::Io,
-        writer: unix::Io,
+        reader: sys::Io,
+        writer: sys::Io,
     }
 
     impl Awakener {
         pub fn new() -> io::Result<Awakener> {
-            let (rd, wr) = unix::pipe()?;
+            let (rd, wr) = sys::pipe()?;
 
             Ok(Awakener {
                 reader: rd,
@@ -53,7 +53,7 @@ mod pipe {
             }
         }
 
-        fn reader(&self) -> &unix::Io {
+        fn reader(&self) -> &sys::Io {
             &self.reader
         }
     }
