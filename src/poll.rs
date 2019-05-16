@@ -337,7 +337,7 @@ pub struct Registry {
 
 struct Inner {
     // Platform specific IO selector
-    selector: sys::Selector,
+    selector: Mutex<sys::Selector>,
 
     // Custom readiness queue
     readiness_queue: ReadinessQueue,
@@ -871,6 +871,7 @@ impl fmt::Debug for Registry {
     }
 }
 
+#[cfg(not(target_os = "horizon"))]
 impl AsRawFd for Poll {
     fn as_raw_fd(&self) -> RawFd {
         self.registry.inner.selector.as_raw_fd()
