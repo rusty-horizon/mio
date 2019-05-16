@@ -2,12 +2,14 @@ use std::os::unix::io::RawFd;
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::time::Duration;
 use std::{cmp, i32};
+use std::io;
+use std::sync::Mutex;
 
 use libc::{POLLERR, POLLHUP, POLLIN, POLLOUT, POLLPRI};
 
-use event_imp::Event;
-use sys::{cvt, UnixReady};
-use {io, Interests, PollOpt, Ready, Token};
+use crate::event_imp::Event;
+use super::{cvt, UnixReady};
+use crate::{PollOpt, Ready, Token};
 
 /// Each Selector has a globally unique(ish) ID associated with it. This ID
 /// gets tracked by `TcpStream`, `TcpListener`, etc... when they are first
@@ -18,7 +20,7 @@ static NEXT_ID: AtomicUsize = AtomicUsize::new(0);
 
 pub struct Selector {
     id: usize,
-    events: Vec<libc::pollfd>,
+    events: Mutex<Vec<libc::pollfd>>,
 }
 
 impl Selector {
@@ -26,7 +28,7 @@ impl Selector {
         // offset by 1 to avoid choosing 0 as the id of a selector
         let id = NEXT_ID.fetch_add(1, Ordering::Relaxed) + 1;
 
-        Ok(Selector { id: id, events: vec![] })
+        Ok(Selector { id: id, events: Mutex::new(vec![]) })
     }
 
     pub fn id(&self) -> usize {
@@ -35,7 +37,7 @@ impl Selector {
 
     /// Wait for events from the OS
     pub fn select(
-        &mut self,
+        &self,
         evts: &mut Events,
         awakener: Token,
         timeout: Option<Duration>,
@@ -46,12 +48,14 @@ impl Selector {
 
         evts.events.clear();
 
+        let mut events = self.events.lock().unwrap();
+
         if unsafe { cvt(libc::poll(
-            self.events.as_mut_ptr(),
-            self.events.len() as u32,
+            events.as_mut_ptr(),
+            events.len() as u32,
             timeout_ms,
         ))? } != 0 {
-            for (i, event) in self.events.iter_mut().enumerate() {
+            for (i, event) in events.iter_mut().enumerate() {
                 if event.revents == 0 { continue; }
 
                 if i == awakener.into() {
@@ -69,61 +73,47 @@ impl Selector {
 
     /// Register event interests for the given IO handle with the OS
     pub fn register(
-        &mut self,
+        &self,
         fd: RawFd,
         token: Token,
-        interests: Interests,
-        _opts: PollOpt,
+        interests: Ready,
+        opts: PollOpt,
     ) -> io::Result<()> {
         let info = libc::pollfd {
             fd: usize::from(token) as i32,
-            events: interests_to_poll(interests),
+            events: ready_to_poll(interests, opts),
             revents: 0,
         };
 
-        self.events.push(info);
+        self.events.lock().unwrap().push(info);
 
         Ok(())
     }
 
     /// Register event interests for the given IO handle with the OS
     pub fn reregister(
-        &mut self,
+        &self,
         fd: RawFd,
         token: Token,
-        interests: Interests,
-        _opts: PollOpt,
+        interests: Ready,
+        opts: PollOpt,
     ) -> io::Result<()> {
         let info = libc::pollfd {
             fd: fd as i32,
-            events: interests_to_poll(interests),
+            events: ready_to_poll(interests, opts),
             revents: 0,
         };
 
-        self.events[usize::from(token)] = info;
+        self.events.lock().unwrap()[usize::from(token)] = info;
 
         Ok(())
     }
 
     /// Deregister event interests for the given IO handle with the OS
-    pub fn deregister(&mut self, fd: RawFd) -> io::Result<()> {
-        self.events.retain(|e| e.fd != fd);
+    pub fn deregister(&self, fd: RawFd) -> io::Result<()> {
+        self.events.lock().unwrap().retain(|e| e.fd != fd);
         Ok(())
     }
-}
-
-fn interests_to_poll(interests: Interests) -> i16 {
-    let mut kind = 0;
-
-    if interests.is_readable() {
-        kind |= POLLIN;
-    }
-
-    if interests.is_writable() {
-        kind |= POLLOUT;
-    }
-
-    kind as i16
 }
 
 fn ready_to_poll(interest: Ready, opts: PollOpt) -> i16 {

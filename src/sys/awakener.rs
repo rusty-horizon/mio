@@ -14,61 +14,42 @@ mod pipe {
      */
 
     pub struct Awakener {
-        reader: unix::Io,
-        writer: unix::Io,
+        //reader: unix::Io,
+        //writer: unix::Io,
     }
 
     impl Awakener {
         pub fn new() -> io::Result<Awakener> {
-            let (rd, wr) = unix::pipe()?;
-
-            Ok(Awakener {
-                reader: rd,
-                writer: wr,
-            })
+            Ok(Awakener {})
         }
 
         pub fn wakeup(&self) -> io::Result<()> {
-            match (&self.writer).write(&[1]) {
-                Ok(_) => Ok(()),
-                Err(e) => {
-                    if e.kind() == io::ErrorKind::WouldBlock {
-                        Ok(())
-                    } else {
-                        Err(e)
-                    }
-                }
-            }
+            unimplemented!("not supported by horizon")
         }
 
         pub fn cleanup(&self) {
-            let mut buf = [0; 128];
-
-            loop {
-                // Consume data until all bytes are purged
-                match (&self.reader).read(&mut buf) {
-                    Ok(i) if i > 0 => {},
-                    _ => return,
-                }
-            }
+            unimplemented!("not supported by horizon")
         }
 
         fn reader(&self) -> &unix::Io {
-            &self.reader
+            unimplemented!("not supported by horizon")
         }
     }
 
     impl Evented for Awakener {
         fn register(&self, poll: &Poll, token: Token, interest: Ready, opts: PollOpt) -> io::Result<()> {
-            self.reader().register(poll, token, interest, opts)
+            //self.reader().register(poll, token, interest, opts)
+            Ok(())
         }
 
         fn reregister(&self, poll: &Poll, token: Token, interest: Ready, opts: PollOpt) -> io::Result<()> {
-            self.reader().reregister(poll, token, interest, opts)
+            //self.reader().reregister(poll, token, interest, opts)
+            Ok(())
         }
 
         fn deregister(&self, poll: &Poll) -> io::Result<()> {
-            self.reader().deregister(poll)
+            //self.reader().deregister(poll)
+            Ok(())
         }
     }
 }

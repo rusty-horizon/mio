@@ -3,8 +3,6 @@ use crate::event_imp::{self as event, Ready, Event, Evented, PollOpt};
 use std::{fmt, io, ptr, usize};
 use std::cell::UnsafeCell;
 use std::{mem, ops, isize};
-use std::os::unix::io::AsRawFd;
-use std::os::unix::io::RawFd;
 use std::sync::{Arc, Mutex, Condvar};
 use std::sync::atomic::{AtomicUsize, AtomicPtr, AtomicBool};
 use std::sync::atomic::Ordering::{self, Acquire, Release, AcqRel, Relaxed, SeqCst};
@@ -1213,12 +1211,6 @@ impl fmt::Debug for Poll {
     fn fmt(&self, fmt: &mut fmt::Formatter<'_>) -> fmt::Result {
         fmt.debug_struct("Poll")
             .finish()
-    }
-}
-
-impl AsRawFd for Poll {
-    fn as_raw_fd(&self) -> RawFd {
-        self.selector.as_raw_fd()
     }
 }
 

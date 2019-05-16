@@ -113,6 +113,9 @@ const LIO: usize   = 0b000000;
 #[cfg(any(target_os = "linux", target_os = "android", target_os = "solaris"))]
 const PRI: usize = ::libc::EPOLLPRI as usize;
 
+#[cfg(target_os = "horizon")]
+const PRI: usize = ::libc::POLLPRI as usize;
+
 
 // Export to support `Ready::all`
 pub const READY_ALL: usize = ERROR | HUP | AIO | LIO;
@@ -241,7 +244,7 @@ impl UnixReady {
     /// [`Poll`]: struct.Poll.html
     #[inline]
     #[cfg(any(target_os = "linux",
-        target_os = "android", target_os = "solaris"))]
+        target_os = "android", target_os = "solaris", target_os = "horizon"))]
     pub fn priority() -> UnixReady {
         UnixReady(ready_from_usize(PRI))
     }
@@ -368,7 +371,7 @@ impl UnixReady {
     /// [`Poll`]: struct.Poll.html
     #[inline]
     #[cfg(any(target_os = "linux",
-        target_os = "android", target_os = "solaris"))]
+        target_os = "android", target_os = "solaris", target_os = "horizon"))]
     pub fn is_priority(&self) -> bool {
         self.contains(ready_from_usize(PRI))
     }

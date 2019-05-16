@@ -128,33 +128,37 @@ impl TcpStream {
     }
 
     pub fn readv(&self, bufs: &mut [&mut IoVec]) -> io::Result<usize> {
-        unsafe {
-            let slice = unix::as_os_slice_mut(bufs);
-            let len = cmp::min(<libc::c_int>::max_value() as usize, slice.len());
-            let rc = libc::readv(self.inner.as_raw_fd(),
-                                 slice.as_ptr(),
-                                 len as libc::c_int);
+        let slice = unix::as_os_slice_mut(bufs);
+        let mut count = 0;
+
+        for vec in slice {
+            let rc = unsafe { libc::read(self.inner.as_raw_fd(), vec.iov_base, vec.iov_len) };
+
             if rc < 0 {
-                Err(io::Error::last_os_error())
-            } else {
-                Ok(rc as usize)
+                return Err(io::Error::last_os_error());
             }
+
+            count += rc;
         }
+
+        Ok(count as usize)
     }
 
     pub fn writev(&self, bufs: &[&IoVec]) -> io::Result<usize> {
-        unsafe {
-            let slice = unix::as_os_slice(bufs);
-            let len = cmp::min(<libc::c_int>::max_value() as usize, slice.len());
-            let rc = libc::writev(self.inner.as_raw_fd(),
-                                  slice.as_ptr(),
-                                  len as libc::c_int);
+        let slice = unix::as_os_slice(bufs);
+        let mut count = 0;
+
+        for vec in slice {
+            let rc = unsafe { libc::write(self.inner.as_raw_fd(), vec.iov_base, vec.iov_len) };
+
             if rc < 0 {
-                Err(io::Error::last_os_error())
-            } else {
-                Ok(rc as usize)
+                return Err(io::Error::last_os_error());
             }
+
+            count += rc;
         }
+
+        Ok(count as usize)
     }
 }
 

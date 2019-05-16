@@ -23,10 +23,6 @@ exclude       = [
 ]
 edition       = "2018"
 
-[features]
-with-deprecated = []
-default = ["with-deprecated"]
-
 [dependencies]
 lazycell = "1"
 log      = "0.4"
@@ -50,6 +46,10 @@ kernel32-sys = "0.2"
 env_logger = { version = "0.4.0", default-features = false }
 tempdir    = "0.3.4"
 bytes      = "0.3.0"
+nx         = { git = 'https://github.com/rusty-horizon/libnx.git', features = [ "twili" ] }
+
+[patch.crates-io]
+libc = { git = 'https://github.com/rust-lang/libc.git' }
 
 [[test]]
 name = "test"

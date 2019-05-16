@@ -1,18 +1,6 @@
-#[cfg(any(target_os = "linux", target_os = "android", target_os = "solaris"))]
-mod epoll;
+mod poll;
 
-#[cfg(any(target_os = "linux", target_os = "android", target_os = "solaris"))]
-pub use self::epoll::{Events, Selector};
-
-#[cfg(any(target_os = "bitrig", target_os = "dragonfly",
-          target_os = "freebsd", target_os = "ios", target_os = "macos",
-          target_os = "netbsd", target_os = "openbsd"))]
-mod kqueue;
-
-#[cfg(any(target_os = "bitrig", target_os = "dragonfly",
-          target_os = "freebsd", target_os = "ios", target_os = "macos",
-          target_os = "netbsd", target_os = "openbsd"))]
-pub use self::kqueue::{Events, Selector};
+pub use self::poll::{Events, Selector};
 
 mod awakener;
 mod eventedfd;
@@ -42,7 +30,9 @@ pub fn pipe() -> crate::io::Result<(Io, Io)> {
     let mut pipes = [0; 2];
     let flags = libc::O_NONBLOCK | libc::O_CLOEXEC;
     unsafe {
-        cvt(libc::pipe2(pipes.as_mut_ptr(), flags))?;
+        cvt(libc::pipe(pipes.as_mut_ptr()))?;
+        libc::fcntl(pipes[0], libc::F_SETFL, flags);
+        libc::fcntl(pipes[1], libc::F_SETFL, flags);
     }
 
     unsafe {
